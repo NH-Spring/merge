@@ -1,0 +1,39 @@
+server:
+  port: 8081
+spring:
+  mail:
+    host: smtp.163.com
+    username: harris_wanghao@163.com
+    password: 963852741q
+    default-encoding: utf-8
+  jpa:
+    database: h2
+    show-sql: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+  datasource:
+    url: jdbc:h2:file:C:/H2/mybatis1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 123456
+  h2:
+    console:
+      path: /h2-console
+      enabled: true
+
+mybatis:
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: com.example.demo.model
+
+pagehelper:
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+
+cbs:
+  imagesPath:
+    file:/D:/img/
+
+

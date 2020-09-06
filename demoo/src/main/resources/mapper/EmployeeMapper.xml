@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.EmployeeDao">
+    <select id="selectAll" resultType="com.example.demo.model.Employee">
+        select * from employee
+        <where>
+            <if test="name != null and name != ''">
+                name like '%${name}%'
+            </if>
+            <if test="shopId !=0">
+                shopId = #{shopId}
+            </if>
+        </where>
+    </select>
+    <update id="updateEmployeeStatus">
+        update employee set
+        deleteStatus = #{status} where id = #{id}
+    </update>
+    <insert id="addEmployee">
+        insert into employee (id,name,addtime,position) values(
+        default,
+        #{name},
+        #{addTime},
+        #{position}
+        )
+    </insert>
+    <select id="FindEmployeeById" resultType="com.example.demo.model.Employee">
+        select * from employee where id = #{value}
+    </select>
+    <update id="updateEmployee">
+        update employee
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="position != null and position != ''">
+                position = #{position},
+            </if>
+            <if test="shopId != null and shopId != ''">
+                shopId = #{shopId}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="deleteEmployee" >
+        delete from employee where id = #{value}
+    </delete>
+</mapper>

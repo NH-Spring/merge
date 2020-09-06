@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.MenusDao">
+    <insert id="addMenus">
+        insert into menus(id,menusName,menusClassId,menusPrice,menusPicture,deletestatus,introduce) values(
+        default,
+        #{menusName},
+        #{menusClassId},
+        #{menusPrice},
+        #{menusPicture},
+        #{deletestatus},
+        #{introduce}
+        )
+    </insert>
+    <select id="findAll" resultType="com.example.demo.model.Menus">
+        select * from menus
+        <where>
+            <if test="value != null and value != ''">
+                menusName like '%${value}%'
+            </if>
+        </where>
+    </select>
+    <delete id="deleteMenus">
+        delete from menus where id = #{value}
+    </delete>
+    <select id="FindmenusById" resultType="com.example.demo.model.Menus">
+        select * from menus where id = #{value}
+    </select>
+    <update id="updatemenus">
+        update menus
+        <set>
+            <if test="menusName != null and menusName != ''">
+                menusName = #{menusName},
+            </if>
+            <if test="menusPrice != null and menusPrice != ''">
+                menusPrice = #{menusPrice},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.RoleDao">
+    <resultMap id="getRole" type="com.example.demo.model.Role">
+        <result column="id" property="id"/>
+        <result column="roleName" property="roleName"/>
+        <result column="roleDesc" property="roleDesc"/>
+        <collection property="childrenRigths" ofType="com.example.demo.model.RightsOne">
+            <result column="lid" property="id"/>
+            <result column="lauthName" property="authName"/>
+            <collection property="childrenRigths" ofType="com.example.demo.model.RightsTwo">
+                <result column="lsid" property="id"/>
+                <result column="lsauthName" property="authName"/>
+                <collection property="childrenRigths" ofType="com.example.demo.model.Rights">
+                    <result column="lssid" property="id"/>
+                    <result column="lssauthName" property="authName"/>
+                </collection>
+            </collection>
+        </collection>
+    </resultMap>
+    <select id="roleChildrens" resultMap="getRole">
+        select
+        r.id as id,
+        r.roleName as roleName,
+        r.roleDesc as roleDesc,
+        l.id as lid,
+        l.authName as lauthName,
+        ls.id as lsid,
+        ls.authName as lsauthName,
+        lss.id as lssid,
+        lss.authName as lssauthName
+        from role r right join role_Rights rr on r.id = rr.roleid
+        left join rights lss on rr.rightsid = lss.id and lss.level = '3'
+        inner join rights ls on ls.id = lss.pid
+        inner join rights l on l.id = ls.pid
+        where r.deletestatus = true
+    </select>
+    <delete id="deleteRoleById">
+        delete from role_rights where roleId = #{roleId} and rightsId = #{rightsId}
+    </delete>
+    <delete id="delectRole">
+        delete from role_rights where roleId = #{roleId}
+    </delete>
+    <delete id="deleteRoleAll">
+        delect from role where id = #{value}
+    </delete>
+    <insert id="AddRoleAndRights">
+        insert into role_Rights(id, roleId, rightsId) values(
+        default,
+        #{roleId},
+        #{rids}
+        )
+    </insert>
+    <select id="roleChildrensByRid" resultMap="getRole">
+        select
+        r.id as id,
+        r.roleName as roleName,
+        r.roleDesc as roleDesc,
+        l.id as lid,
+        l.authName as lauthName,
+        ls.id as lsid,
+        ls.authName as lsauthName,
+        lss.id as lssid,
+        lss.authName as lssauthName
+        from role r right join role_Rights rr on r.id = rr.roleid
+        left join rights lss on rr.rightsid = lss.id and lss.level = '3'
+        inner join rights ls on ls.id = lss.pid
+        inner join rights l on l.id = ls.pid
+        where r.id = #{value}
+    </select>
+    <update id="updateStatus">
+        update role set
+        deletestatus = false
+        where id = #{value}
+    </update>
+    <select id="findRoleById" resultType="com.example.demo.model.Role">
+        select * from role where id = #{value}
+    </select>
+    <update id="updateRole">
+        update role
+        set
+                roleName = #{roleName},
+                roleDesc = #{roleDesc}
+        where id = #{id}
+    </update>
+    <insert id="addRole">
+        insert into role(id, roleName, roleDesc, deletestatus) values(
+            default,
+            #{role.roleName},
+            #{role.roleDesc},
+            true
+        )
+    </insert>
+    <select id="selectMaxId" resultType="int">
+        select max(id) from role
+    </select>
+    <resultMap id="getLeftmenus" type="com.example.demo.model.MenusLeft">
+        <result column="lpath" property="path"/>
+        <result column="lauthName" property="authName"/>
+        <collection property="menusLeftChildren" ofType="com.example.demo.model.MenusLeftChildren">
+            <result column="lspath" property="path"/>
+            <result column="lsauthName" property="authName"/>
+        </collection>
+    </resultMap>
+    <select id="getLeftmenus" resultMap="getLeftmenus">
+        select
+        l.path as lpath,
+
+        l.authName as lauthName,
+        ls.path as lspath,
+
+        ls.authName as lsauthName
+
+        from role r right join role_Rights rr on r.id = rr.roleid
+        left join rights lss on rr.rightsid = lss.id and lss.level = '3'
+        inner join rights ls on ls.id = lss.pid
+        inner join rights l on l.id = ls.pid
+        where r.id = #{value}
+    </select>
+</mapper>

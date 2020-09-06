@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.MenuClassDao">
+    <resultMap id="getAll" type="com.example.demo.model.MenuClass">
+        <result column="mid" property="id"/>
+        <result column="mmenuClassName" property="menuClassName"/>
+        <result column="mdeleteStatus" property="deleteStatus"/>
+        <result column="mlevel" property="level"/>
+        <collection property="Children" ofType="com.example.demo.model.MenuClassChildren">
+            <result column="cid" property="id"/>
+            <result column="cmenuClassName" property="menuClassName"/>
+            <result column="cdeleteStatus" property="deleteStatus"/>
+            <result column="clevel" property="level"/>
+        </collection>
+    </resultMap>
+    <select id="findAll" resultMap="getAll">
+        select m.id as mid,m.menuClassName as mmenuClassName,m.deleteStatus as mdeleteStatus,m.level as mlevel,
+        c.id as cid,c.menuClassName as cmenuClassName,c.deleteStatus as cdeleteStatus,c.level as clevel
+        from menuclass m inner join menuclass c on c.pid = m.id
+
+    </select>
+    <select id="pidSize" resultType="int">
+        select count(id) from menuclass where pid = 0
+    </select>
+    <select id="getparent" resultType="com.example.demo.model.MenuClass">
+        select * from menuclass where pid = 0
+    </select>
+    <insert id="addMenuClass">
+        insert into menuclass(id,menuClassName,level,pid,deleteStatus) values(
+        default,
+        #{menuClassName},
+        #{level},
+        #{pid},
+        #{deleteStatus}
+        )
+    </insert>
+    <delete id="deleteMenuClass">
+        delete from menuclass where id = #{value}
+    </delete>
+    <delete id="deleteMenuClassByPid">
+        delete from menuclass where pid = #{value}
+    </delete>
+    <update id="updateMenuClass">
+        update menuclass
+        set
+        menuClassName = #{menuClassName}
+        where id = #{id}
+    </update>
+</mapper>

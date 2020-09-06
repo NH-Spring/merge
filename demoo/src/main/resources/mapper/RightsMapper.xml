@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.RightsDao">
+    <select id="selectAll" resultType="com.example.demo.model.Rights">
+        select * from rights
+    </select>
+    <resultMap id="getRTree" type="com.example.demo.model.RightsOne">
+        <result column="r1id" property="id"/>
+        <result column="r1authName" property="authName"/>
+        <collection property="childrenRigths" ofType="com.example.demo.model.RightsTwo">
+            <result column="r2id" property="id"/>
+            <result column="r2authName" property="authName"/>
+            <collection property="childrenRigths" ofType="com.example.demo.model.Rights">
+                <result column="r3id" property="id"/>
+                <result column="r3authName" property="authName"/>
+            </collection>
+        </collection>
+    </resultMap>
+    <select id="getRightsTree" resultMap="getRTree">
+        select
+        r1.id as r1id,
+        r1.authName as r1authName,
+        r1.level as r1level,
+        r1.pid as r1pid,
+        r2.id as r2id,
+        r2.authName as r2authName,
+        r2.level as r2level,
+        r2.pid as r2pid,
+        r3.id as r3id,
+        r3.authName as r3authName,
+        r3.level as r3leve,
+        r3.pid
+        from rights r1
+        inner join rights r2 on r1.id = r2.pid
+        inner join rights r3 on r2.id = r3.pid
+    </select>
+</mapper>

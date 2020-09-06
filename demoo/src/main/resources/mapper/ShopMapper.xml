@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.ShopDao">
+    <select id="shopList" resultType="com.example.demo.model.Shop">
+        select * from shop
+        <where>
+            <if test="value != null and value != ''">
+                shopName like '%${value}%'
+            </if>
+        </where>
+    </select>
+    <update id="updateShopStatus">
+        update shop set
+        deleteStatus = #{status} where id = #{id}
+    </update>
+    <select id="FindShopById" resultType="com.example.demo.model.Shop">
+        select * from shop where id = #{value}
+    </select>
+    <delete id="deleteShop" >
+        delete from shop where id = #{value}
+    </delete>
+    <update id="updateShop">
+        update shop
+        <set>
+            <if test="shopName != null and shopName != ''">
+                shopName = #{shopName},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <insert id="addShop">
+        insert into shop(id,addTime,address,shopName) values(
+        default,
+        #{addTime},
+        #{address},
+        #{shopName}
+        )
+    </insert>
+    <select id="findEcharts" resultType="com.example.demo.model.EchartsModel">
+        select count(*) as nums, addtime from shop group by addtime
+    </select>
+</mapper>
